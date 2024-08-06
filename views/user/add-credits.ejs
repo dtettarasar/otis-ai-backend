@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Add credits</title>
+        <!--<link rel="stylesheet" href="style.css">-->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    </head>
+    <body>
+        <h1>Otis AI</h1>
+        <h2>Welcome <%= username %>!</h2>
+        <h3>Your Credits</h3>
+
+        <p>current balance: <%= credit %></p>
+
+        <h4>Buy credits</h4>
+
+        <form action="/payment-api/create-checkout-session" method="post">
+            <div class="container">
+                <p>Please use the form below to buy credits.</p>
+                <hr>
+
+                <label for="quantity">Quantity (between 1 and 20):</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="20">
+            
+                <button type="submit">Buy</button>
+            </div>
+            
+        </form>
+
+    </body>
+</html>

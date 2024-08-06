@@ -1,0 +1,304 @@
+  <style>
+
+    .keyword-bdge {
+      font-size: 0.8rem;
+      padding: 5px;
+      margin: 5px;
+    }
+
+    .keyword-bdge p {
+      margin:4px;
+    }
+
+    #keywords_params {
+      display:none;
+    }
+
+    .post-submit-content {
+      display: none;
+    }
+
+  </style>
+  
+  <!-- Modal -->
+  <div data-bs-backdrop='static' class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Generate Text with AI</h5>
+          <button type="button" class="btn-close pre-submit-content" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="pre-submit-content">
+
+            <strong>What your article should be about?</strong>
+          Use the fields below to tell us about your article. 
+
+            <form id="trigger-creation-form" action="/article/create-ai" method="post">
+             
+              <div class="form-group mt-2">
+                  <label for="description_param">Description</label>
+                  <!--<textarea name="description" id="description" class="form-control"></textarea>-->
+                  <input value="" type="text" name="description_param" id="description_param" class="form-control">
+                  <p class="mt-2">Character counter: <strong><span id="description-counter"></span></strong></p>
+              </div>
+
+              <div class="form-group mt-2 mb-2">
+                <label for="keywords">Keywords</label>
+                <input value="" type="text" name="title" id="keywords" class="form-control">
+                <p class="mt-2">Character counter: <strong><span id="keyword-counter"></span></strong></p>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-start flex-wrap" id="keywords-container">
+
+              </div>
+
+              <!-- this field is used to store the keywords value and pass to back end -->
+              <textarea name="keywords_params" id="keywords_params" class="form-control"></textarea>
+
+              <p class="text-primary mt-2">You have <strong><%= credit %></strong> credit(s).</p>
+
+              <strong><p id="err-msg-container" class="text-danger mt-2"></p></strong>
+
+              <% if(credit <= 0){ %>
+
+                <p class="text-danger mt-2" ><strong>You need credits to generate articles with AI</strong></p>
+
+                <a class="btn btn-primary mt-2" href="/user/add-credits">Buy credits here</a>
+
+              <% } %>
+              
+
+              <% if(credit > 0){ %>
+                <button id="add-kywrd-btn" type="button" class="btn btn-secondary mt-2">Add keywords</button>
+                <a id="trigger-creation-btn" type="button" class="btn btn-success mt-2">Use 1 credit to generate an article</a>
+              <% } else{ %>  
+                <button disabled id="add-kywrd-btn" type="button" class="btn btn-secondary mt-2">Add keywords</button>
+                <button disabled class="btn btn-success mt-2">Use 1 credit to generate an article</button>
+              <% } %>
+
+            </form>
+
+          </div>
+
+          <div class="post-submit-content">
+            <p>Article in creation, please wait :)</p>
+          </div>
+          
+
+        </div>
+        <div class="modal-footer pre-submit-content">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+          <!-- <button id="modal-validate-btn" type="button" class="btn btn-primary">Save changes</button>-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+    // html elements
+    const addKeyWrdBtn = document.querySelector("#add-kywrd-btn");
+    const addKeyWrdField = document.querySelector("#keywords");
+    const descriptionParamField = document.querySelector("#description_param");
+    const keywordsContainer = document.querySelector("#keywords-container");
+    const keywordsParamsField = document.querySelector("#keywords_params");
+    const submitBtn = document.querySelector('#trigger-creation-btn');
+    const preSubmitContent = document.querySelectorAll('.pre-submit-content');
+    const postSubmitContent = document.querySelectorAll('.post-submit-content');
+    const formElement = document.querySelector("#trigger-creation-form");
+    const errMsgContainer = document.querySelector("#err-msg-container");
+
+    const descriptionCounterElem = document.querySelector('#description-counter');
+    const keywordCounterElem = document.querySelector('#keyword-counter');
+
+    const keywordsLimit = 10;
+    const keywordMaxLength = 30;
+    const descriptionMaxLength = 130;
+    let keyWordIdCount = 0;
+
+    // Todo 
+    // add condition to check each keywords isn't longer than 30 char => Done
+    //update the front to add counters : 
+    /*
+    description length counter
+    keywords counter
+    keywords char counter
+    */
+
+    const keywordObj = {};
+
+    const addKeyWords = () => {
+
+      /*
+      console.log("init get keywords button");
+      console.log(Object.keys(keywordObj).length);
+      */
+
+      console.log("keyword length:");
+      console.log(addKeyWrdField.value.length);
+
+      const simplifiedKeyWord = addKeyWrdField.value.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
+
+      if (Object.keys(keywordObj).length == keywordsLimit) {
+
+        //console.log(`you can add a maximum of ${keywordsLimit} keywords`);
+        errMsgContainer.innerHTML = `You can add a maximum of ${keywordsLimit} keywords`;
+
+      } else if (!simplifiedKeyWord) {
+
+        console.log('field should not be empty')
+        errMsgContainer.innerHTML = `The keyword field should not be empty`;
+
+      } else if (addKeyWrdField.value.length > keywordMaxLength) {
+
+        //console.log(`make sure your keywords doesn't exceed ${keywordMaxLength} characters`);
+        errMsgContainer.innerHTML = `Make sure your keywords doesn't exceed ${keywordMaxLength} characters`;
+
+      } else {
+
+        const keywordIdVal = `keyword-tag-${keyWordIdCount}`;
+        const tagDivElem = document.createElement("div");
+        const tagPElem = document.createElement("p");
+        const tagBtnElem = document.createElement("button");
+        const tagTxtElem = document.createTextNode(simplifiedKeyWord);
+
+        keywordObj[keywordIdVal] = simplifiedKeyWord;
+
+        tagDivElem.classList.add('badge', 'bg-primary', 'keyword-bdge', 'd-flex', 'flex-row');
+        tagBtnElem.classList.add('btn-close');
+        tagBtnElem.setAttribute('type', 'button');
+        tagBtnElem.setAttribute('aria-label', 'Close');
+
+        tagBtnElem.setAttribute('onclick', `removeKeyword('${keywordIdVal}')`);
+        tagDivElem.setAttribute('id', keywordIdVal);
+
+        tagPElem.appendChild(tagTxtElem);
+        tagDivElem.appendChild(tagPElem);
+        tagDivElem.appendChild(tagBtnElem);
+        keywordsContainer.appendChild(tagDivElem);
+
+
+        addKeyWrdField.value = "";
+        errMsgContainer.innerHTML = "";
+
+        trigrinitKeywordCounter();
+        keywordsParamsField.value = JSON.stringify(keywordObj);
+
+        keyWordIdCount++;
+
+      } 
+      
+      //console.log(keywordsParamsField.value);
+
+    }
+
+    const removeKeyword = (keywordIdVal) => {
+
+      const keywordElem = document.querySelector(`#${keywordIdVal}`);
+      keywordElem.remove();
+      delete keywordObj[keywordIdVal];
+      keywordsParamsField.value = JSON.stringify(keywordObj);
+      //console.log(keywordsParamsField.value);
+
+    }
+
+    const changeModalContentOnSubmission = () => {
+
+      preSubmitContent.forEach(element => {
+        element.style.display = "none";
+      });
+
+      postSubmitContent.forEach(element => {
+        element.style.display = "block";
+      })
+
+    }
+
+    submitBtn.addEventListener("click", () => {
+
+
+      /*
+      console.log('init submission');
+      console.log("check keywords params length");
+      console.log(Object.keys(keywordObj).length);
+      console.log("description value:");
+      console.log(descriptionParamField.value);
+      console.log("desc length");
+      console.log(descriptionParamField.value.length);
+      */
+
+      const keywordsOk = Object.keys(keywordObj).length > 0 && Object.keys(keywordObj).length <= keywordsLimit;
+      const descriptionOk = descriptionParamField.value !== '';
+
+      if (keywordsOk || descriptionOk) {
+
+        if (descriptionParamField.value.length > descriptionMaxLength) {
+
+          //console.log(`Make sure your description doesn't exceed ${descriptionMaxLength} characters`);
+          errMsgContainer.innerHTML = `Make sure your description doesn't exceed ${descriptionMaxLength} characters`;
+
+        } else {
+
+          changeModalContentOnSubmission();
+          formElement.submit();
+          console.log("creation ok");
+
+        }
+
+
+      } else {
+
+        //console.log(`give a description between 1 and 150 chars or give between 1 & ${keywordsLimit} keyword(s)`);
+        errMsgContainer.innerHTML = `Give a description between 1 and 150 characters or give between 1 & ${keywordsLimit} keyword(s)`;
+
+      }
+
+    });
+
+    const fieldLengthCounter = (txtFieldElement, strLengthLimit, counterElement) => {
+
+      // return the function to create a closure: to store in memory the HTML elements passed as arguments
+
+      return () => {
+
+        const strLength = txtFieldElement.value.length;
+
+        /*
+        console.log(`strLength: ${strLength}/${strLengthLimit}`);
+        console.log(counterElement);
+        */
+
+        counterElement.innerHTML = `${strLength}/${strLengthLimit}`
+
+        if (strLength == 0) {
+
+          counterElement.className = "text-secondary"; 
+
+        } else if (strLength <= strLengthLimit) {
+
+          counterElement.className = "text-success"; 
+
+        } else {
+
+          counterElement.className = "text-danger";
+
+        }
+
+      }
+
+    }
+
+    descriptionParamField.addEventListener("input", fieldLengthCounter(descriptionParamField, descriptionMaxLength, descriptionCounterElem));
+    addKeyWrdField.addEventListener("input", fieldLengthCounter(addKeyWrdField, keywordMaxLength, keywordCounterElem));
+    addKeyWrdBtn.addEventListener("click", addKeyWords);
+
+    // to init character counters on load
+    const trigrDescCounter =  fieldLengthCounter(descriptionParamField, descriptionMaxLength, descriptionCounterElem);
+    const trigrinitKeywordCounter = fieldLengthCounter(addKeyWrdField, keywordMaxLength, keywordCounterElem);
+
+    trigrDescCounter();
+    trigrinitKeywordCounter();
+
+</script>
