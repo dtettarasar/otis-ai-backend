@@ -105,9 +105,13 @@ test('test error handling for user creation: test wrong email format', async () 
 
 test('test error handling for user creation: try to create user that already exist in mongodb', async () => {
 
-    /*
-        Take the intial user one & two and try to recreate new users with same email or username. 
-        Make sure the database Object return Error object with false creationStatus
-    */
+    const testDuplicateUserZero = await dataBaseObj.createUser(testUserObj.userCont[0].username, `dummy.testman.${testUserObj.getRandomInt(10000)}@otis-ai-test.eu`, 'Test001!');
+    const testDuplicateUserOne = await dataBaseObj.createUser(`DummyTestman${testUserObj.getRandomInt(10000)}`, testUserObj.userCont[1].email, 'Test001!');
+
+    await expect(testDuplicateUserZero.creationStatus).toBe(false);
+    await expect(testDuplicateUserZero.Error).toBe('username already used');
+
+    await expect(testDuplicateUserOne.creationStatus).toBe(false);
+    await expect(testDuplicateUserOne.Error).toBe('email already used');
 
 });
