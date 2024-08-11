@@ -11,6 +11,8 @@ testUserObj.generateUser('user with wrong username', 'VivinaDaBest!', 'vivinadab
 testUserObj.generateUser('user with wrong username', 'Lea Kpop', 'lk', '@otis-ai-test.eu', 'Test001!');
 testUserObj.generateUser('user with wrong password', 'WilliballZ', 'williballz', '@otis-ai-test.eu', 'dbz');
 testUserObj.generateUser('user with wrong password', 'BruceTheSensei', 'bruce', '@otis-ai-test.eu', 'thebestracer63');
+testUserObj.generateUser('user with wrong email format', 'DummyTestlady', '!?dummy', '@otis-ai-test.eu', 'Test001!');
+testUserObj.generateUser('user with wrong email format', 'DummyTestgirl', 'dummy.testgirl', 'otis-ai-test.eu', 'Test001!');
 
 beforeAll(async () => {
 
@@ -82,12 +84,16 @@ test('test error handling for user creation: test wrong password', async () => {
     await expect(testUserObj.userCont[5].creationResult.creationStatus).toBe(false);
     await expect(testUserObj.userCont[5].creationResult.Error).toBe('password not secure enough');
 
-    console.log(testUserObj.userCont);
+    //console.log(testUserObj.userCont);
 
 });
 
 test('test error handling for user creation: test wrong email format', async () => {
 
+    await testUserObj.testUserCreation(6);
+    await testUserObj.testUserCreation(7);
+    
+    console.log(testUserObj.userCont);
 
 });
 
