@@ -92,7 +92,13 @@ test('test error handling for user creation: test wrong email format', async () 
 
     await testUserObj.testUserCreation(6);
     await testUserObj.testUserCreation(7);
-    
+
+    await expect(testUserObj.userCont[6].creationResult.creationStatus).toBe(false);
+    await expect(testUserObj.userCont[6].creationResult.Error).toBe('email format not valid');
+
+    await expect(testUserObj.userCont[7].creationResult.creationStatus).toBe(false);
+    await expect(testUserObj.userCont[7].creationResult.Error).toBe('email format not valid');
+
     console.log(testUserObj.userCont);
 
 });
