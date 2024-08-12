@@ -164,6 +164,9 @@ router.post('/user-create-article', async (req, res) => {
         if (articleCreation) {
 
             const encryptedArticleId = await strEncrypter.method.encryptString(articleCreation._id.toHexString());
+
+            await dataBaseObj.updateCreditBalance(articleObj.otisUserId, -1);
+
             articleObj.encryptedIdStr = `${encryptedArticleId.iv}_${encryptedArticleId.encryptedStr}`;
             response.articleId = articleObj.encryptedIdStr;
 
