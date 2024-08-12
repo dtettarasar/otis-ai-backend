@@ -264,6 +264,12 @@ router.get('/retrieve-article-data', async (req, res) => {
 router.get('/retrieve-article-ids-list', async(req, res) => {
 
     // console.log('get request for article ids list route');
+
+    // TODO : vérifier si cette route peut-être supprimée
+
+    // TODO : changer le process de récuparation de l'id : utiliser le token que l'on va authentifier ici, afin d'unifier le process dans chaque route. 
+    // Ne pas directement utiliser le userID Obj ici. 
+    // Créer une méthode / middleware pour gérer ce process. 
     
     const userIdObj = req.query.userId;
     const articleIdList = await dataBaseObj.getArticleIdsList(userIdObj);
@@ -277,6 +283,10 @@ router.get('/retrieve-article-ids-list', async(req, res) => {
 });
 
 router.get('/retrieve-article-all-datas', async(req, res) => {
+
+    // TODO : changer le process de récuparation de l'id : utiliser le token que l'on va authentifier ici, afin d'unifier le process dans chaque route. 
+    // Ne pas directement utiliser le userID Obj ici. 
+    // Créer une méthode / middleware pour gérer ce process. 
 
     const userIdObj = req.query.userId;
     console.log('get request from the retrieve-article-all-datas route');
@@ -352,6 +362,10 @@ router.get('/refresh-token', async (req, res) => {
 router.get('/user-datas', async (req, res) => {
 
     // console.log('got request for user-datas route');
+
+    // TODO : changer le process de récuparation de l'id : utiliser le token que l'on va authentifier ici, afin d'unifier le process dans chaque route. 
+    // Ne pas directement utiliser le userID Obj ici. 
+    // Créer une méthode / middleware pour gérer ce process. 
 
     const userIdObj = req.query.userId;
     // console.log('User ID object:', userIdObj);
