@@ -176,6 +176,26 @@ const dataBaseObj = {
 
     },
 
+    async getUserCreditBalance(userEncryptedId) {
+
+        const decryptUserId = await strEncrypter.method.decryptString(userEncryptedId);
+
+        try {
+
+            const query = UserModel.findById(decryptUserId);
+            query.select('_id credit');
+            const result = await query.exec();
+            return result.credit;
+
+        } catch(error) {
+
+            console.log(error);
+            return false;
+
+        }
+
+    },
+
     async getUserName(userID) {
 
         const query = UserModel.findById(userID);

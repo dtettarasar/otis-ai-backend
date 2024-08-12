@@ -194,16 +194,25 @@ router.get('/user-credit-balance', async(req, res) => {
     console.log('get request to retrieve user credit balance');
 
     const accessToken = req.query.accessToken;
-    console.log('accessToken: '); 
-    console.log(accessToken);
-    const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
-    console.log('tokenData: ');
-    console.log(tokenData);
+    // console.log('accessToken: '); 
+    // console.log(accessToken);
+
+    const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    const userEncryptedId = tokenData.result.userIdEncryption;
+
+    // console.log('userEncryptedId: ');
+    // console.log(userEncryptedId);
+
+    const userCredit = await dataBaseObj.getUserCreditBalance(userEncryptedId);
+    
+    // console.log("userCredit: ");
+    // console.log(userCredit);
 
     res.json({
         msg: 'get request to retrieve user credit balance',
-        accessToken: req.query.accessToken
+        accessToken: req.query.accessToken,
+        newCreditBalance: userCredit
     })
 
 });
