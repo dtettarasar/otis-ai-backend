@@ -189,6 +189,25 @@ router.post('/user-create-article', async (req, res) => {
 
 });
 
+router.get('/user-credit-balance', async(req, res) => {
+
+    console.log('get request to retrieve user credit balance');
+
+    const accessToken = req.query.accessToken;
+    console.log('accessToken: '); 
+    console.log(accessToken);
+    const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+
+    console.log('tokenData: ');
+    console.log(tokenData);
+
+    res.json({
+        msg: 'get request to retrieve user credit balance',
+        accessToken: req.query.accessToken
+    })
+
+});
+
 router.post('/user-delete-article', async (req, res) => {
 
     console.log('post request to delete article');
