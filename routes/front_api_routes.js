@@ -123,6 +123,13 @@ router.post('/user-create-article', async (req, res) => {
 
     };
 
+    const response = {
+
+        message: 'post request to create article',
+        accessToken: accessToken,
+        articleId: null
+
+    }
     
     const prompt = aiArticleCreator.generatePrompt(articleObj.keywords, articleObj.description, articleObj.language);
     //console.log(prompt);
@@ -154,25 +161,28 @@ router.post('/user-create-article', async (req, res) => {
 
         const articleCreation = await dataBaseObj.createArticle(articleObj.title, articleObj.description, articleObj.content, articleObj.otisUserId, articleObj.keywords, articleObj.language);
 
+        if (articleCreation) {
+
+            const encryptedArticleId = await strEncrypter.method.encryptString(articleCreation._id.toHexString());
+            articleObj.encryptedIdStr = `${encryptedArticleId.iv}_${encryptedArticleId.encryptedStr}`;
+            response.articleId = articleObj.encryptedIdStr;
+
+            // console.log("response: ");
+            // console.log(response);
+
+        }
+
         // console.log(articleCreation);
         // console.log('article id: ' + articleCreation._id);
-
-        const encryptedArticleId = await strEncrypter.method.encryptString(articleCreation._id.toHexString());
         
         // console.log('encryptedArticleId: ');
         // console.log(encryptedArticleId);
-
-        articleObj.encryptedIdStr = `${encryptedArticleId.iv}_${encryptedArticleId.encryptedStr}`;
 
     }
 
     console.log(articleObj);
 
-    res.json({
-        message: 'post request to create article',
-        accessToken: accessToken,
-        articleId: articleObj.encryptedIdStr
-    });
+    res.json(response);
 
 });
 
