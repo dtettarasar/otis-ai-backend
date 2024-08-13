@@ -139,3 +139,27 @@ test('test the findUserById method', async () => {
     await expect(testFailedFinder).toBe(false);
 
 });
+
+test('test the findUserByName method', async () => {
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+
+    // console.log(userZero);
+
+    const testFinder = await dataBaseObj.findUserByName(userZero.username);
+    // console.log(testFinder[0]._id);
+
+    await expect(testFinder).toBeTypeOf('object');
+    await expect(testFinder).toHaveLength(1);
+    await expect(testFinder[0]._id).toEqual(userZero._id);
+    await expect(testFinder[0].username).toEqual(userZero.username);
+
+    const userFakeUsername = "thisis1fakeusername";
+    const testFailedFinder = await dataBaseObj.findUserByName(userFakeUsername);
+
+    // console.log(testFailedFinder);
+
+    await expect(testFailedFinder).toBeTypeOf('object');
+    await expect(testFailedFinder).toHaveLength(0);
+
+});

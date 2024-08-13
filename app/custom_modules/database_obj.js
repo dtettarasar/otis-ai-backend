@@ -152,11 +152,19 @@ const dataBaseObj = {
 
     async findUserByName(userName) {
 
-        const query = UserModel.find({username: userName});
-        query.select('username');
-        const userFound = await query.exec();
+        try {
 
-        return userFound;
+            const query = UserModel.find({username: userName});
+            query.select('username');
+            const userFound = await query.exec();
+            return userFound;
+
+        } catch (error) {
+
+            console.log(error);
+            return false;
+
+        }
 
     },
 
