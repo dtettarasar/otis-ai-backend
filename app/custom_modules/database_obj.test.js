@@ -212,10 +212,8 @@ test('test the getUserCreditBalance method', async () => {
     const encryptedUserId = await strEncrypter.encryptString(userZero._id.toHexString());
     const testUserCredit = await dataBaseObj.getUserCreditBalance(encryptedUserId);
 
-    const fakeEncryptedUserId = {
-        iv: 'thisisafakeivusedfortestingaaaaa',
-        encryptedStr: 'thisisafakeencryptedstringusedfortestingpurposeonlyaaaaaaaaaaaa'
-    };
+    const fakeUserId = "thisis1fakeuserid";
+    const fakeEncryptedUserId = await strEncrypter.encryptString(fakeUserId);
 
     const testFailedUserCredit = await dataBaseObj.getUserCreditBalance(fakeEncryptedUserId);
 
