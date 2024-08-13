@@ -176,9 +176,30 @@ test('test the findUserByEmail method', async () => {
 
     const userFakeEmail = "thisisafake@email.com";
     const testFailedFinder = await dataBaseObj.findUserByEmail(userFakeEmail);
-    
+
     await expect(testFailedFinder).toBeTypeOf('object');
     await expect(testFailedFinder).toHaveLength(0);
 
+
+});
+
+test('test the updateCreditBalance method', async () => {
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+    // console.log(userZero);
+
+    await expect(userZero.credit).toEqual(0);
+
+    const testUpdateCredit = await dataBaseObj.updateCreditBalance(userZero._id, 5);
+    // console.log(testUpdateCredit);
+
+    await expect(testUpdateCredit._id).toEqual(userZero._id);
+    await expect(testUpdateCredit.credit).toEqual(5);
+
+    const falseUserId = "thisis1fakeuserid";
+    const testFailedUpdate = await dataBaseObj.updateCreditBalance(falseUserId, 5);
+    // console.log(testFailedUpdate);
+
+    await expect(testFailedUpdate).toBe(false);
 
 });

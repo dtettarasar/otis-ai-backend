@@ -260,13 +260,27 @@ const dataBaseObj = {
 
         const user = await this.findUserById(userId);
 
-        /*
+        
         console.log(user);
         console.log(creditAmount);
-        */
+        
 
         const newBalance = user.credit + creditAmount;
+        
+        try {
 
+            user.set({ credit: newBalance });
+            await user.save();
+            return user;
+
+        } catch (error) {
+
+            console.log(error);
+            return false;
+
+        }
+        
+        /*
         if (!user) {
 
             throw new NotFoundError();
@@ -276,7 +290,7 @@ const dataBaseObj = {
             user.set({ credit: newBalance });
             await user.save();
 
-        }
+        }*/
 
     },
 
