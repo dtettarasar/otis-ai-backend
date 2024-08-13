@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest';
 const dataBaseObj = require('./database_obj');
 const testUserObj = require('./test_user_obj');
 
@@ -113,5 +114,28 @@ test('test error handling for user creation: try to create user that already exi
 
     await expect(testDuplicateUserOne.creationStatus).toBe(false);
     await expect(testDuplicateUserOne.Error).toBe('email already used');
+
+});
+
+test('test the findUserById method', async () => {
+
+    // console.log(testUserObj.userCont[0].creationResult.userData._id);
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+    const testFinder = await dataBaseObj.findUserById(userZero._id);
+
+    await expect(testFinder._id).toEqual(userZero._id);
+    await expect(testFinder.username).toEqual(userZero.username);
+    await expect(testFinder.email).toEqual(userZero.email);
+    await expect(testFinder.password).toEqual(userZero.password);
+
+    // console.log(testFinder);
+
+    const falseUserId = "thisis1fakeuserid";
+    const testFailedFinder = await dataBaseObj.findUserById(falseUserId);
+
+    // console.log(testFailedFinder);
+
+    await expect(testFailedFinder).toBe(false);
 
 });

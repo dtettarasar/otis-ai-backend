@@ -135,13 +135,17 @@ const dataBaseObj = {
 
     async findUserById(userId) {
 
-        const query = UserModel.findById(userId);
-        const userFound = await query.exec();
+        try {
 
-        if (userFound) {
+            const query = UserModel.findById(userId);
+            const userFound = await query.exec();
             return userFound;
-        } else {
+
+        } catch (error) {
+
+            console.log(error);
             return false;
+
         }
 
     },
