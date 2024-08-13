@@ -1,4 +1,6 @@
 import { expect, test } from 'vitest';
+import { method as strEncrypter } from './str_encrypter';
+
 const dataBaseObj = require('./database_obj');
 const testUserObj = require('./test_user_obj');
 
@@ -202,4 +204,22 @@ test('test the updateCreditBalance method', async () => {
 
     await expect(testFailedUpdate).toBe(false);
 
+});
+
+test('test the getUserCreditBalance method', async () => {
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+    const encryptedUserId = await strEncrypter.encryptString(userZero._id.toHexString());
+    const testUserCredit = await dataBaseObj.getUserCreditBalance(encryptedUserId);
+
+    const fakeEncryptedUserId = {
+        iv: 'thisisafakeivusedfortestingaaaaa',
+        encryptedStr: 'thisisafakeencryptedstringusedfortestingpurposeonlyaaaaaaaaaaaa'
+    };
+
+    const testFailedUserCredit = await dataBaseObj.getUserCreditBalance(fakeEncryptedUserId);
+
+    await expect(testUserCredit).toEqual(5);
+    await expect(testFailedUserCredit).toBe(false);
+    
 });
