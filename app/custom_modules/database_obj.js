@@ -279,18 +279,6 @@ const dataBaseObj = {
             return false;
 
         }
-        
-        /*
-        if (!user) {
-
-            throw new NotFoundError();
-
-        } else {
-
-            user.set({ credit: newBalance });
-            await user.save();
-
-        }*/
 
     },
 
