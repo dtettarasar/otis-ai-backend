@@ -135,34 +135,54 @@ const dataBaseObj = {
 
     async findUserById(userId) {
 
-        const query = UserModel.findById(userId);
-        const userFound = await query.exec();
+        try {
 
-        if (userFound) {
+            const query = UserModel.findById(userId);
+            const userFound = await query.exec();
             return userFound;
-        } else {
+
+        } catch (error) {
+
+            console.log(error);
             return false;
+
         }
 
     },
 
     async findUserByName(userName) {
 
-        const query = UserModel.find({username: userName});
-        query.select('username');
-        const userFound = await query.exec();
+        try {
 
-        return userFound;
+            const query = UserModel.find({username: userName});
+            query.select('username');
+            const userFound = await query.exec();
+            return userFound;
+
+        } catch (error) {
+
+            console.log(error);
+            return false;
+
+        }
 
     },
 
     async findUserByEmail(userEmail) {
 
-        const query = UserModel.find({email: userEmail});
-        query.select('email');
-        const userFound = await query.exec();
+        try {
 
-        return userFound;
+            const query = UserModel.find({email: userEmail});
+            query.select('email');
+            const userFound = await query.exec();
+            return userFound;
+
+        } catch(error) {
+
+            console.log(error);
+            return false;
+
+        }
 
     },
 
@@ -173,6 +193,26 @@ const dataBaseObj = {
         const result = await query.exec();
 
         return result.credit;
+
+    },
+
+    async getUserCreditBalance(userEncryptedId) {
+
+        const decryptUserId = await strEncrypter.method.decryptString(userEncryptedId);
+
+        try {
+
+            const query = UserModel.findById(decryptUserId);
+            query.select('_id credit');
+            const result = await query.exec();
+            return result.credit;
+
+        } catch(error) {
+
+            console.log(error);
+            return false;
+
+        }
 
     },
 
@@ -220,21 +260,23 @@ const dataBaseObj = {
 
         const user = await this.findUserById(userId);
 
-        /*
+        
         console.log(user);
         console.log(creditAmount);
-        */
+        
 
         const newBalance = user.credit + creditAmount;
-
-        if (!user) {
-
-            throw new NotFoundError();
-
-        } else {
+        
+        try {
 
             user.set({ credit: newBalance });
             await user.save();
+            return user;
+
+        } catch (error) {
+
+            console.log(error);
+            return false;
 
         }
 

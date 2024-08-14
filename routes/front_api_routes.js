@@ -123,6 +123,13 @@ router.post('/user-create-article', async (req, res) => {
 
     };
 
+    const response = {
+
+        message: 'post request to create article',
+        accessToken: accessToken,
+        articleId: null
+
+    }
     
     const prompt = aiArticleCreator.generatePrompt(articleObj.keywords, articleObj.description, articleObj.language);
     //console.log(prompt);
@@ -154,25 +161,59 @@ router.post('/user-create-article', async (req, res) => {
 
         const articleCreation = await dataBaseObj.createArticle(articleObj.title, articleObj.description, articleObj.content, articleObj.otisUserId, articleObj.keywords, articleObj.language);
 
+        if (articleCreation) {
+
+            const encryptedArticleId = await strEncrypter.method.encryptString(articleCreation._id.toHexString());
+
+            await dataBaseObj.updateCreditBalance(articleObj.otisUserId, -1);
+
+            articleObj.encryptedIdStr = `${encryptedArticleId.iv}_${encryptedArticleId.encryptedStr}`;
+            response.articleId = articleObj.encryptedIdStr;
+
+            // console.log("response: ");
+            // console.log(response);
+
+        }
+
         // console.log(articleCreation);
         // console.log('article id: ' + articleCreation._id);
-
-        const encryptedArticleId = await strEncrypter.method.encryptString(articleCreation._id.toHexString());
         
         // console.log('encryptedArticleId: ');
         // console.log(encryptedArticleId);
-
-        articleObj.encryptedIdStr = `${encryptedArticleId.iv}_${encryptedArticleId.encryptedStr}`;
 
     }
 
     console.log(articleObj);
 
+    res.json(response);
+
+});
+
+router.get('/user-credit-balance', async(req, res) => {
+
+    console.log('get request to retrieve user credit balance');
+
+    const accessToken = req.query.accessToken;
+
+    // console.log('accessToken: '); 
+    // console.log(accessToken);
+
+    const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    const userEncryptedId = tokenData.result.userIdEncryption;
+
+    // console.log('userEncryptedId: ');
+    // console.log(userEncryptedId);
+
+    const userCredit = await dataBaseObj.getUserCreditBalance(userEncryptedId);
+    
+    // console.log("userCredit: ");
+    // console.log(userCredit);
+
     res.json({
-        message: 'post request to create article',
-        accessToken: accessToken,
-        articleId: articleObj.encryptedIdStr
-    });
+        msg: 'get request to retrieve user credit balance',
+        accessToken: req.query.accessToken,
+        newCreditBalance: userCredit
+    })
 
 });
 
@@ -251,6 +292,12 @@ router.get('/retrieve-article-data', async (req, res) => {
 router.get('/retrieve-article-ids-list', async(req, res) => {
 
     // console.log('get request for article ids list route');
+
+    // TODO : vérifier si cette route peut-être supprimée
+
+    // TODO : changer le process de récuparation de l'id : utiliser le token que l'on va authentifier ici, afin d'unifier le process dans chaque route. 
+    // Ne pas directement utiliser le userID Obj ici. 
+    // Créer une méthode / middleware pour gérer ce process. 
     
     const userIdObj = req.query.userId;
     const articleIdList = await dataBaseObj.getArticleIdsList(userIdObj);
@@ -264,6 +311,10 @@ router.get('/retrieve-article-ids-list', async(req, res) => {
 });
 
 router.get('/retrieve-article-all-datas', async(req, res) => {
+
+    // TODO : changer le process de récuparation de l'id : utiliser le token que l'on va authentifier ici, afin d'unifier le process dans chaque route. 
+    // Ne pas directement utiliser le userID Obj ici. 
+    // Créer une méthode / middleware pour gérer ce process. 
 
     const userIdObj = req.query.userId;
     console.log('get request from the retrieve-article-all-datas route');
@@ -339,6 +390,10 @@ router.get('/refresh-token', async (req, res) => {
 router.get('/user-datas', async (req, res) => {
 
     // console.log('got request for user-datas route');
+
+    // TODO : changer le process de récuparation de l'id : utiliser le token que l'on va authentifier ici, afin d'unifier le process dans chaque route. 
+    // Ne pas directement utiliser le userID Obj ici. 
+    // Créer une méthode / middleware pour gérer ce process. 
 
     const userIdObj = req.query.userId;
     // console.log('User ID object:', userIdObj);

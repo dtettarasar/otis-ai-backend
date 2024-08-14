@@ -1,3 +1,6 @@
+import { expect, test } from 'vitest';
+import { method as strEncrypter } from './str_encrypter';
+
 const dataBaseObj = require('./database_obj');
 const testUserObj = require('./test_user_obj');
 
@@ -114,4 +117,107 @@ test('test error handling for user creation: try to create user that already exi
     await expect(testDuplicateUserOne.creationStatus).toBe(false);
     await expect(testDuplicateUserOne.Error).toBe('email already used');
 
+});
+
+test('test the findUserById method', async () => {
+
+    // console.log(testUserObj.userCont[0].creationResult.userData._id);
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+    const testFinder = await dataBaseObj.findUserById(userZero._id);
+
+    await expect(testFinder._id).toEqual(userZero._id);
+    await expect(testFinder.username).toEqual(userZero.username);
+    await expect(testFinder.email).toEqual(userZero.email);
+    await expect(testFinder.password).toEqual(userZero.password);
+
+    // console.log(testFinder);
+
+    const falseUserId = "thisis1fakeuserid";
+    const testFailedFinder = await dataBaseObj.findUserById(falseUserId);
+
+    // console.log(testFailedFinder);
+
+    await expect(testFailedFinder).toBe(false);
+
+});
+
+test('test the findUserByName method', async () => {
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+
+    // console.log(userZero);
+
+    const testFinder = await dataBaseObj.findUserByName(userZero.username);
+    // console.log(testFinder[0]._id);
+
+    await expect(testFinder).toBeTypeOf('object');
+    await expect(testFinder).toHaveLength(1);
+    await expect(testFinder[0]._id).toEqual(userZero._id);
+    await expect(testFinder[0].username).toEqual(userZero.username);
+
+    const userFakeUsername = "thisis1fakeusername";
+    const testFailedFinder = await dataBaseObj.findUserByName(userFakeUsername);
+
+    // console.log(testFailedFinder);
+
+    await expect(testFailedFinder).toBeTypeOf('object');
+    await expect(testFailedFinder).toHaveLength(0);
+
+});
+
+test('test the findUserByEmail method', async () => {
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+    const testFinder = await dataBaseObj.findUserByEmail(userZero.email);
+
+    await expect(testFinder).toBeTypeOf('object');
+    await expect(testFinder).toHaveLength(1);
+    await expect(testFinder[0]._id).toEqual(userZero._id);
+    await expect(testFinder[0].email).toEqual(userZero.email);
+
+    const userFakeEmail = "thisisafake@email.com";
+    const testFailedFinder = await dataBaseObj.findUserByEmail(userFakeEmail);
+
+    await expect(testFailedFinder).toBeTypeOf('object');
+    await expect(testFailedFinder).toHaveLength(0);
+
+
+});
+
+test('test the updateCreditBalance method', async () => {
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+    // console.log(userZero);
+
+    await expect(userZero.credit).toEqual(0);
+
+    const testUpdateCredit = await dataBaseObj.updateCreditBalance(userZero._id, 5);
+    // console.log(testUpdateCredit);
+
+    await expect(testUpdateCredit._id).toEqual(userZero._id);
+    await expect(testUpdateCredit.credit).toEqual(5);
+
+    const falseUserId = "thisis1fakeuserid";
+    const testFailedUpdate = await dataBaseObj.updateCreditBalance(falseUserId, 5);
+    // console.log(testFailedUpdate);
+
+    await expect(testFailedUpdate).toBe(false);
+
+});
+
+test('test the getUserCreditBalance method', async () => {
+
+    const userZero = testUserObj.userCont[0].creationResult.userData;
+    const encryptedUserId = await strEncrypter.encryptString(userZero._id.toHexString());
+    const testUserCredit = await dataBaseObj.getUserCreditBalance(encryptedUserId);
+
+    const fakeUserId = "thisis1fakeuserid";
+    const fakeEncryptedUserId = await strEncrypter.encryptString(fakeUserId);
+
+    const testFailedUserCredit = await dataBaseObj.getUserCreditBalance(fakeEncryptedUserId);
+
+    await expect(testUserCredit).toEqual(5);
+    await expect(testFailedUserCredit).toBe(false);
+    
 });
