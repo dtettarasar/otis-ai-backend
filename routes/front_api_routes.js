@@ -195,19 +195,21 @@ router.get('/user-credit-balance', async(req, res) => {
 
     const accessToken = req.query.accessToken;
 
-    // console.log('accessToken: '); 
-    // console.log(accessToken);
+    console.log('accessToken: '); 
+    console.log(accessToken);
 
     const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
     const userEncryptedId = tokenData.result.userIdEncryption;
 
-    // console.log('userEncryptedId: ');
-    // console.log(userEncryptedId);
+    console.log('userEncryptedId: ');
+    console.log(userEncryptedId);
 
     const userCredit = await dataBaseObj.getUserCreditBalance(userEncryptedId);
     
-    // console.log("userCredit: ");
-    // console.log(userCredit);
+    console.log("userCredit: ");
+    console.log(userCredit);
+
+    console.log('end of get request to retrieve user credit balance');
 
     res.json({
         msg: 'get request to retrieve user credit balance',
@@ -322,8 +324,8 @@ router.get('/retrieve-article-all-datas', async(req, res) => {
     console.log(userIdObj);
 
     const articleDataList = await dataBaseObj.getUserAllArticleDatas(userIdObj);
-    console.log('articleDataList');
-    console.log(articleDataList);
+    // console.log('articleDataList');
+    // console.log(articleDataList);
 
     res.json({
         msg:'get request from the retrieve-article-all-datas route',

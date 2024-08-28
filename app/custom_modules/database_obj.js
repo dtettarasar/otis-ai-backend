@@ -261,8 +261,8 @@ const dataBaseObj = {
         const user = await this.findUserById(userId);
 
         
-        console.log(user);
-        console.log(creditAmount);
+        // console.log(user);
+        // console.log(creditAmount);
         
 
         const newBalance = user.credit + creditAmount;
@@ -455,7 +455,7 @@ const dataBaseObj = {
         const articleDataToSend = [];
 
         const decryptUserID = await strEncrypter.method.decryptString(userIdObj);
-        console.log('decryptUserID: ' + decryptUserID);
+        // console.log('decryptUserID: ' + decryptUserID);
 
         try {
 
