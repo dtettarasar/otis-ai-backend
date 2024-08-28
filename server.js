@@ -60,7 +60,11 @@ app.use(methodOverride('_method'));
 app.use('/user', userRouter);
 app.use('/payment-api', stripePaymentRouter);
 app.use('/article', articleRouter);
-app.use('/front-api', frontApiRouter);
+
+app.use('/front-api', (req, res, next) => {
+    res.set('Cache-Control', 'no-cache');
+    next();
+}, frontApiRouter);
 
 // main route
 app.get('/', (req, res) => {
