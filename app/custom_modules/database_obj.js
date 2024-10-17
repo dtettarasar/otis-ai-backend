@@ -307,6 +307,8 @@ const dataBaseObj = {
             Attention, les articles actuellement en production n'ont pas de slug, donc à voir comment gérer ça. Peut-être créer une fonction qui va checker les articles, avant de l'envoyer vers le front
             si slug equal null, then create slug, save in mongodb and send to vue js app. 
 
+            ou alors inclure dans le slug, la date de création de l'article (au format nombre) pour s'assurer que le slug est bien unique 
+
         */
 
         console.log("Database Obj: init create article method");
