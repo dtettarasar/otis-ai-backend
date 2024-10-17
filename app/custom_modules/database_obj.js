@@ -7,6 +7,7 @@ const createDomPurify = require('dompurify');
 const {JSDOM} = require('jsdom');
 const dompurify = createDomPurify(new JSDOM().window);
 const strEncrypter = require('./str_encrypter');
+const strSlugGenerator = require('./str_slug_generator');
 
 //Models
 const roleModel = require('../models/role.model');
@@ -330,6 +331,8 @@ const dataBaseObj = {
 
         console.log(articleObj.title);
         console.log(articleObj.createdAt);
+
+        strSlugGenerator.method.build();
 
         try {
 
