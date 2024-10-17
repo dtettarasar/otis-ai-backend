@@ -22,6 +22,7 @@ const ArticleSch = new mongoose.Schema({
     lastModifiedAt: {type: Date, default: Date.now},
     otisUserId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     sanitizedHtml : {type: String, required: true},
+    slug : {type: String, required: true},
     language: {
         type: String,
         required: true,

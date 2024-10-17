@@ -319,8 +319,17 @@ const dataBaseObj = {
             content: contentStr,
             otisUserId: otisUserIdStr,
             language: language,
-            keywords: keywordsArr
+            keywords: keywordsArr,
+            slug: 'slug'
         });
+
+        articleObj.slug = "test"
+;
+        console.log('article obj created');
+        console.log(articleObj);
+
+        console.log(articleObj.title);
+        console.log(articleObj.createdAt);
 
         try {
 
