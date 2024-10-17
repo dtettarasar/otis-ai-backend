@@ -287,8 +287,23 @@ const dataBaseObj = {
     async createArticle(titleStr, descriptionStr, contentStr, otisUserIdStr, keywordsArr, language) {
 
         /*
+            
             todo: 
             add process to check and update user credit here
+
+            générer des slug pour chaque article. 
+
+            Créer dans le database obj, une fonction qui va générer un slug, en prenant en argument un titre d'article.
+            Cette fonction doit également vérifier que le slug n'existe pas déjà pour l'utilisateur
+
+            faire une fonction qui va rechercher un article avec un en paramètre un slug et un user id. Si un article est trouvé, alors le slug doit être complété par un nombre à la fin. 
+
+            Il faudra ensuite sauvegarder le slug dans le document de l'article, dans la methode create article
+
+            ce slug sera utilisé ensuite dans l'application vue js, pour être stocké dans le store. Et le slug servira à retrouver un article, et récupérer les infos de l'article, depuis le store. 
+
+            Car l'id n'est pas une bonne solution pour consulter l'article sur l'application vue. Les id ne doivent servir que pour les requêtes axios. 
+
         */
 
         console.log("Database Obj: init create article method");
