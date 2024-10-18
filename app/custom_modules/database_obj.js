@@ -324,19 +324,14 @@ const dataBaseObj = {
             slug: 'slug'
         });
 
-        articleObj.slug = "test"
-;
-        console.log('article obj created');
-        console.log(articleObj);
-
-        // console.log(articleObj.title);
-        // console.log(articleObj.createdAt);
-
-        strSlugGenerator.method.build(articleObj.createdAt, articleObj.title);
+        articleObj.slug = strSlugGenerator.method.build(articleObj.createdAt, articleObj.title);        
 
         try {
 
             articleObj = await articleObj.save();
+
+            console.log('article obj saved');
+            console.log(articleObj);
 
             return articleObj
 
