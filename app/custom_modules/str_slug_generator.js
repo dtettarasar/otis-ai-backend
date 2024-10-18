@@ -18,28 +18,30 @@ const strSlugGenerator = {
 
         return title
             .toLowerCase()
+            .normalize('NFD')                   // Normalise les accents
+            .replace(/[\u0300-\u036f]/g, '')    // Supprime les diacritiques (accents)
             .trim()
-            .replace(/[^\w\s-]/g, '')  // Enlève les caractères spéciaux sauf les tirets
-            .replace(/\s+/g, '-')       // Remplace les espaces par des tirets
-            .replace(/-+/g, '-')        // Remplace plusieurs tirets par un seul
-            .replace(/^-+|-+$/g, '');   // Supprime les tirets au début et à la fin
+            .replace(/[^\w\s-]/g, '')           // Enlève les caractères spéciaux sauf les tirets
+            .replace(/\s+/g, '-')               // Remplace les espaces par des tirets
+            .replace(/-+/g, '-')                // Remplace plusieurs tirets par un seul
+            .replace(/^-+|-+$/g, '');           // Supprime les tirets au début et à la fin
 
     },
 
     build: (dateString, title) => {
 
-        console.log("build the slug with:");
-        console.log(dateString);
-        console.log(title);
+        // console.log("build the slug with:");
+        // console.log(dateString);
+        // console.log(title);
 
         const datePart = strSlugGenerator.formatDateToDigits(dateString);
-        console.log("datePart:");
-        console.log(datePart);
+        // console.log("datePart:");
+        // console.log(datePart);
 
         const titlePart = strSlugGenerator.slugifyStr(title);
         const slug = `${datePart}-${titlePart}`;
-        console.log("Slug final:");
-        console.log(slug);
+        // console.log("Slug final:");
+        // console.log(slug);
 
         return slug;
 
