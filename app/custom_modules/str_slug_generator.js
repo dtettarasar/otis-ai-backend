@@ -14,6 +14,18 @@ const strSlugGenerator = {
 
     },
 
+    slugifyStr: (title) => {
+
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')  // Enlève les caractères spéciaux sauf les tirets
+            .replace(/\s+/g, '-')       // Remplace les espaces par des tirets
+            .replace(/-+/g, '-')        // Remplace plusieurs tirets par un seul
+            .replace(/^-+|-+$/g, '');   // Supprime les tirets au début et à la fin
+
+    },
+
     build: (dateString, title) => {
 
         console.log("build the slug with:");
@@ -23,6 +35,13 @@ const strSlugGenerator = {
         const datePart = strSlugGenerator.formatDateToDigits(dateString);
         console.log("datePart:");
         console.log(datePart);
+
+        const titlePart = strSlugGenerator.slugifyStr(title);
+        const slug = `${datePart}-${titlePart}`;
+        console.log("Slug final:");
+        console.log(slug);
+
+        return slug;
 
     }
 
