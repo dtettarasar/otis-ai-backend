@@ -329,10 +329,10 @@ const dataBaseObj = {
         console.log('article obj created');
         console.log(articleObj);
 
-        console.log(articleObj.title);
-        console.log(articleObj.createdAt);
+        // console.log(articleObj.title);
+        // console.log(articleObj.createdAt);
 
-        strSlugGenerator.method.build();
+        strSlugGenerator.method.build(articleObj.createdAt, articleObj.title);
 
         try {
 
