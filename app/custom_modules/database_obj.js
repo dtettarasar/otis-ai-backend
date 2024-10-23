@@ -321,7 +321,6 @@ const dataBaseObj = {
             otisUserId: otisUserIdStr,
             language: language,
             keywords: keywordsArr,
-            slug: 'slug'
         });
 
         articleObj.slug = strSlugGenerator.method.build(articleObj.createdAt, articleObj.title);        
