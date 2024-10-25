@@ -7,6 +7,8 @@ const createDomPurify = require('dompurify');
 const {JSDOM} = require('jsdom');
 const dompurify = createDomPurify(new JSDOM().window);
 
+const strSlugGenerator = require('../custom_modules/str_slug_generator');
+
 // Todo editer le modèle en fonction du nouvel editeur côté vue js:
 /*
 Si l'éditeur génère et édite directement du code html sans gérer du markdown, adapter le modèle pour que this.sanitizedHtml récupère du html au lieu du markdown
@@ -22,6 +24,7 @@ const ArticleSch = new mongoose.Schema({
     lastModifiedAt: {type: Date, default: Date.now},
     otisUserId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     sanitizedHtml : {type: String, required: true},
+    slug : {type: String, default: ''},
     language: {
         type: String,
         required: true,
@@ -32,6 +35,13 @@ const ArticleSch = new mongoose.Schema({
         type: [String],
         default: []
     }
+});
+
+ArticleSch.pre('save', function(next) {
+    if (!this.slug) {
+        this.slug = strSlugGenerator.method.build(this.createdAt, this.title);
+    }
+    next();
 });
 
 ArticleSch.pre("validate", function (next) {
@@ -46,7 +56,7 @@ ArticleSch.pre("validate", function (next) {
 
     next();
 
-})
+});
 
 const Article = mongoose.model(
     "Article", ArticleSch

@@ -7,6 +7,7 @@ const createDomPurify = require('dompurify');
 const {JSDOM} = require('jsdom');
 const dompurify = createDomPurify(new JSDOM().window);
 const strEncrypter = require('./str_encrypter');
+const strSlugGenerator = require('./str_slug_generator');
 
 //Models
 const roleModel = require('../models/role.model');
@@ -287,8 +288,28 @@ const dataBaseObj = {
     async createArticle(titleStr, descriptionStr, contentStr, otisUserIdStr, keywordsArr, language) {
 
         /*
+            
             todo: 
             add process to check and update user credit here
+
+            générer des slug pour chaque article. 
+
+            Créer dans le database obj, une fonction qui va générer un slug, en prenant en argument un titre d'article.
+            Cette fonction doit également vérifier que le slug n'existe pas déjà pour l'utilisateur
+
+            faire une fonction qui va rechercher un article avec un en paramètre un slug et un user id. Si un article est trouvé, alors le slug doit être complété par un nombre à la fin. 
+
+            Il faudra ensuite sauvegarder le slug dans le document de l'article, dans la methode create article
+
+            ce slug sera utilisé ensuite dans l'application vue js, pour être stocké dans le store. Et le slug servira à retrouver un article, et récupérer les infos de l'article, depuis le store. 
+
+            Car l'id n'est pas une bonne solution pour consulter l'article sur l'application vue. Les id ne doivent servir que pour les requêtes axios. 
+
+            Attention, les articles actuellement en production n'ont pas de slug, donc à voir comment gérer ça. Peut-être créer une fonction qui va checker les articles, avant de l'envoyer vers le front
+            si slug equal null, then create slug, save in mongodb and send to vue js app. 
+
+            ou alors inclure dans le slug, la date de création de l'article (au format nombre) pour s'assurer que le slug est bien unique 
+
         */
 
         console.log("Database Obj: init create article method");
@@ -299,12 +320,15 @@ const dataBaseObj = {
             content: contentStr,
             otisUserId: otisUserIdStr,
             language: language,
-            keywords: keywordsArr
-        });
+            keywords: keywordsArr,
+        });       
 
         try {
 
             articleObj = await articleObj.save();
+
+            console.log('article obj saved');
+            console.log(articleObj);
 
             return articleObj
 
@@ -475,6 +499,7 @@ const dataBaseObj = {
                     content: articleList[i].sanitizedHtml,
                     creationDate: articleList[i].createdAt,
                     lastModifDate: articleList[i].lastModifiedAt,
+                    slug: articleList[i].slug,
                   }
 
                   //console.log(articleObj);
@@ -497,7 +522,39 @@ const dataBaseObj = {
 
         // console.log('end of the getUserAllArticleDatas method from the databaseObj');
 
-    }
+    },
+
+    async generateSlugsForExistingArticles() {
+
+        try {
+
+            const articles = await ArticleModel.find({
+                $or: [
+                    { slug: '' },
+                    { slug: { $exists: false } }
+                ]
+            });
+    
+            if (articles.length === 0) {
+                console.log('No articles without slugs found.');
+                return;
+            }
+    
+            for (let article of articles) {
+                article.slug = strSlugGenerator.method.build(article.createdAt, article.title);
+                await article.save();
+                console.log(`Generated slug for article: ${article._id}`);
+            }
+    
+            console.log(`Slugs successfully generated for ${articles.length} articles.`);
+
+        } catch (err) {
+
+            console.error('Error generating slugs for articles: ', err);
+
+        }
+
+    },    
 
 }
 
