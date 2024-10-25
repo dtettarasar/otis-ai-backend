@@ -5,11 +5,11 @@ const dateString = "2024-10-17T17:31:31.819Z";
 const title = "Les Meilleurs Jeux Vidéo en 2024!";
 const titleTwo = "the Story of UFC !!! ";
 
-const formattedDateString = "20241017173131";
+const formattedDateString = "20241017173131819";
 const formattedTitleString = "les-meilleurs-jeux-video-en-2024";
 const formattedTitleStringTwo = "the-story-of-ufc";
 
-const finalSlug = "20241017173131-the-story-of-ufc";
+const finalSlug = "20241017173131819-the-story-of-ufc";
 
 test('test the formatDateToDigits method', async () => {
 

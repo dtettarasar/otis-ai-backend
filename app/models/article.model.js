@@ -24,7 +24,7 @@ const ArticleSch = new mongoose.Schema({
     lastModifiedAt: {type: Date, default: Date.now},
     otisUserId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     sanitizedHtml : {type: String, required: true},
-    slug : {type: String, default: ''},
+    slug : { type: String, unique: true, required: true },
     language: {
         type: String,
         required: true,
@@ -37,14 +37,11 @@ const ArticleSch = new mongoose.Schema({
     }
 });
 
-ArticleSch.pre('save', function(next) {
+ArticleSch.pre("validate", function (next) {
+
     if (!this.slug) {
         this.slug = strSlugGenerator.method.build(this.createdAt, this.title);
     }
-    next();
-});
-
-ArticleSch.pre("validate", function (next) {
 
     if (this.content) {
 
