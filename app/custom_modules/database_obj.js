@@ -7,6 +7,7 @@ const createDomPurify = require('dompurify');
 const {JSDOM} = require('jsdom');
 const dompurify = createDomPurify(new JSDOM().window);
 const strEncrypter = require('./str_encrypter');
+const strSlugGenerator = require('./str_slug_generator');
 
 //Models
 const roleModel = require('../models/role.model');
@@ -520,7 +521,34 @@ const dataBaseObj = {
 
         // console.log('end of the getUserAllArticleDatas method from the databaseObj');
 
-    }
+    },
+
+    async generateSlugsForExistingArticles() {
+
+        try {
+            
+            const articles = await ArticleModel.find({ slug: '' });
+    
+            if (articles.length === 0) {
+                console.log('No articles without slugs found.');
+                return;
+            }
+    
+            for (let article of articles) {
+                article.slug = strSlugGenerator.method.build(article.createdAt, article.title);
+                await article.save();
+                console.log(`Generated slug for article: ${article._id}`);
+            }
+    
+            console.log(`Slugs successfully generated for ${articles.length} articles.`);
+
+        } catch (err) {
+
+            console.error('Error generating slugs for articles: ', err);
+
+        }
+
+    },    
 
 }
 

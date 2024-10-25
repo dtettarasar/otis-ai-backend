@@ -10,7 +10,7 @@ const articleRouter = require('./routes/article_routes');
 const frontApiRouter = require('./routes/front_api_routes');
 
 const dataBaseObj = require('./app/custom_modules/database_obj');
-dataBaseObj.initDB();
+// dataBaseObj.initDB();
 
 const app = express();
 
@@ -74,6 +74,18 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
-});
+(async () => {
+    try {
+        // Init database
+        await dataBaseObj.initDB();
+        console.log('Database initialized successfully');
+
+        // Start server only after successful DB init
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}.`);
+        });
+    } catch (error) {
+        console.error('Error initializing the database:', error);
+        process.exit(1); // Exit with failure
+    }
+})();
