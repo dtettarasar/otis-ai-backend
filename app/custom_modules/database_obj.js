@@ -499,6 +499,7 @@ const dataBaseObj = {
                     content: articleList[i].sanitizedHtml,
                     creationDate: articleList[i].createdAt,
                     lastModifDate: articleList[i].lastModifiedAt,
+                    slug: articleList[i].slug,
                   }
 
                   //console.log(articleObj);
