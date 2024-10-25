@@ -80,6 +80,10 @@ const PORT = process.env.PORT || 8080;
         await dataBaseObj.initDB();
         console.log('Database initialized successfully');
 
+        // Generate slugs for existing articles after DB init
+        await dataBaseObj.generateSlugsForExistingArticles();
+        console.log('ended the generateSlugsForExistingArticles method');
+
         // Start server only after successful DB init
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}.`);

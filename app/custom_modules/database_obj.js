@@ -526,8 +526,13 @@ const dataBaseObj = {
     async generateSlugsForExistingArticles() {
 
         try {
-            
-            const articles = await ArticleModel.find({ slug: '' });
+
+            const articles = await ArticleModel.find({
+                $or: [
+                    { slug: '' },
+                    { slug: { $exists: false } }
+                ]
+            });
     
             if (articles.length === 0) {
                 console.log('No articles without slugs found.');
