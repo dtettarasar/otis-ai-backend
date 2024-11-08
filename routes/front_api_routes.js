@@ -104,6 +104,14 @@ router.post('/user-create-article', async (req, res) => {
     Encrypt this id
     send the encrypted id the in the format: iv_enrcyptId
     this new string will be used as the link for the vue client to view the article. 
+
+    Ajudsment to do here: 
+
+    Now that the vue client use the slug to view the article, the process needs to be adjusted here: 
+    Once the article is created: send in the response all the article data, make sure the id is encrypted. 
+    Make sure the slug is added. 
+
+    In the vue client: retrive the article object, store it in the vuex store + in the local storage as well. 
     
     */
 
