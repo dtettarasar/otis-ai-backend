@@ -135,7 +135,8 @@ router.post('/user-create-article', async (req, res) => {
 
         message: 'post request to create article',
         accessToken: accessToken,
-        articleId: null
+        articleId: null,
+        articleData: null
 
     }
     
@@ -178,8 +179,23 @@ router.post('/user-create-article', async (req, res) => {
             articleObj.encryptedIdStr = `${encryptedArticleId.iv}_${encryptedArticleId.encryptedStr}`;
             response.articleId = articleObj.encryptedIdStr;
 
-            // console.log("response: ");
-            // console.log(response);
+            console.log("response: ");
+            console.log(response);
+
+            console.log("articleCreation: ");
+            console.log(articleCreation);
+
+            response.articleData = {
+                id: articleObj.encryptedIdStr,
+                title: articleCreation.title,
+                description: articleCreation.description,
+                content: articleCreation.sanitizedHtml,
+                creationDate: articleCreation.createdAt,
+                lastModifDate: articleCreation.lastModifiedAt,
+                language: articleCreation.language,
+                keywordArr: articleCreation.keywords,
+                slug: articleCreation.slug,
+            };
 
         }
 
@@ -191,7 +207,7 @@ router.post('/user-create-article', async (req, res) => {
 
     }
 
-    console.log(articleObj);
+    //console.log(articleObj);
 
     res.json(response);
 
