@@ -5,7 +5,7 @@ const UserSch = new mongoose.Schema({
     username: {type: String, required: true}, 
     email: {type: String, required: true},
     password: {type: String, required: true},
-    credit: {type: Number, default: 0 },
+    credit: {type: Number, default: 5 },
     stripeCustomerId: { type: String, default: null },
     roles: [
         {
