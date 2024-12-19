@@ -347,6 +347,11 @@ const dataBaseObj = {
 
     async editArticle(accessToken, articleObj) {
 
+        const result = {
+            updateStatus: null,
+            error:null
+        }
+
         console.log("---------------------------------------------------------");
         console.log('init the editArticle method from the database Obj');
 
@@ -382,6 +387,21 @@ const dataBaseObj = {
         const articleData = await this.findArticleById(decryptArticleId);
         console.log("articleData from the database: ");
         console.log(articleData);
+
+        const articleUserIdStr = articleData.otisUserId.toHexString();
+        const decryptUserIdStr = decryptUserId.toString();
+
+        if (articleUserIdStr === decryptUserIdStr) {
+
+            console.log("userID in article valid");
+
+        } else {
+
+            result.updateStatus = false;
+            result.error = "userID from article not equal to user ID from token"
+
+        }
+
 
         console.log("end of editArticle method");
         console.log("---------------------------------------------------------");
