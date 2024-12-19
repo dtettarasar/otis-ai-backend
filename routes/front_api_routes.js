@@ -219,11 +219,7 @@ router.post('/user-update-article', async(req, res) => {
     const accessToken = req.body.accessToken;
     const articleObj = req.body.articleObj;
 
-    console.log("accessToken: ");
-    console.log(accessToken);
-
-    console.log("articleObj");
-    console.log(articleObj);
+    await dataBaseObj.editArticle(accessToken, articleObj);
 
     res.json({
         test: 'ok',
