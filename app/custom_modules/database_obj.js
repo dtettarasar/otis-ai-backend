@@ -362,6 +362,11 @@ const dataBaseObj = {
         console.log("userEncryptedId");
         console.log(userEncryptedId);
 
+        const decryptUserId = await strEncrypter.method.decryptString(userEncryptedId);
+        console.log("decryptUserId:", decryptUserId);
+        console.log("decryptUserId type:", typeof decryptUserId);
+
+
     },
 
     async deleteArticle(encryptedArticleID, userEncryptedId) {
