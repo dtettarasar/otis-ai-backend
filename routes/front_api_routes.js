@@ -213,6 +213,20 @@ router.post('/user-create-article', async (req, res) => {
 
 });
 
+router.post('/user-update-article', async(req, res) => {
+
+    console.log('post request to update article');
+    const accessToken = req.body.accessToken;
+    console.log("accessToken: ");
+    console.log(accessToken);
+
+    res.json({
+        test: 'ok',
+        message: "post request to /user-update-article route"
+    });
+
+});
+
 router.get('/user-credit-balance', async(req, res) => {
 
     console.log('get request to retrieve user credit balance');
