@@ -398,10 +398,11 @@ const dataBaseObj = {
         } else {
 
             result.updateStatus = false;
-            result.error = "userID from article not equal to user ID from token"
+            result.error = "userID from article not equal to user ID from token";
 
         }
 
+        console.log(result);
 
         console.log("end of editArticle method");
         console.log("---------------------------------------------------------");
