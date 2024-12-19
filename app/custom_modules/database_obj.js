@@ -379,6 +379,9 @@ const dataBaseObj = {
         const decryptArticleId = await strEncrypter.method.decryptString(articleIdObj);
         console.log('decryptArticleId:', decryptArticleId);
 
+        const articleData = await this.findArticleById(decryptArticleId);
+        console.log("articleData from the database: ");
+        console.log(articleData);
 
         console.log("end of editArticle method");
         console.log("---------------------------------------------------------");
