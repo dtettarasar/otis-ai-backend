@@ -217,8 +217,13 @@ router.post('/user-update-article', async(req, res) => {
 
     console.log('post request to update article');
     const accessToken = req.body.accessToken;
+    const articleObj = req.body.articleObj;
+
     console.log("accessToken: ");
     console.log(accessToken);
+
+    console.log("articleObj");
+    console.log(articleObj);
 
     res.json({
         test: 'ok',
