@@ -349,7 +349,9 @@ const dataBaseObj = {
 
         const result = {
             updateStatus: null,
-            error:null
+            articleEncryptedId: articleObj.id,
+            error:null,
+            updatedContent: null
         }
 
         console.log("---------------------------------------------------------");
@@ -357,7 +359,8 @@ const dataBaseObj = {
 
         console.log("accessToken: ");
         console.log(accessToken);
-
+        
+        // articleObj contains the article data that comes from the Vue Js App
         console.log("articleObj");
         console.log(articleObj);
 
@@ -384,6 +387,7 @@ const dataBaseObj = {
         const decryptArticleId = await strEncrypter.method.decryptString(articleIdObj);
         console.log('decryptArticleId:', decryptArticleId);
 
+        // articleData contains the article data from the MongoDB document
         const articleData = await this.findArticleById(decryptArticleId);
         console.log("articleData from the database: ");
         console.log(articleData);
@@ -394,6 +398,14 @@ const dataBaseObj = {
         if (articleUserIdStr === decryptUserIdStr) {
 
             console.log("userID in article valid");
+            articleData.set({content: articleObj.sanitizedHtml});
+            await articleData.save();
+
+            console.log("article data, after saving: ");
+            console.log(articleData);
+
+            result.updateStatus = true;
+            result.updatedContent = articleData.sanitizedHtml;
 
         } else {
 
