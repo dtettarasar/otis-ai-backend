@@ -347,6 +347,7 @@ const dataBaseObj = {
 
     async editArticle(accessToken, articleObj) {
 
+        console.log("---------------------------------------------------------");
         console.log('init the editArticle method from the database Obj');
 
         console.log("accessToken: ");
@@ -366,6 +367,21 @@ const dataBaseObj = {
         console.log("decryptUserId:", decryptUserId);
         console.log("decryptUserId type:", typeof decryptUserId);
 
+        // Get the article encrypted id and convert it to an object that can be used for decryption
+        const articleIdObj = {
+            iv: articleObj.id.split('_')[0],
+            encryptedStr: articleObj.id.split('_')[1]
+        }
+
+        console.log("articleIdObj");
+        console.log(articleIdObj);
+
+        const decryptArticleId = await strEncrypter.method.decryptString(articleIdObj);
+        console.log('decryptArticleId:', decryptArticleId);
+
+
+        console.log("end of editArticle method");
+        console.log("---------------------------------------------------------");
 
     },
 
