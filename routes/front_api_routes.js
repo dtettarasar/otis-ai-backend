@@ -219,7 +219,10 @@ router.post('/user-update-article', async(req, res) => {
     const accessToken = req.body.accessToken;
     const articleObj = req.body.articleObj;
 
-    await dataBaseObj.editArticle(accessToken, articleObj);
+    const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    const userEncryptedId = tokenData.result.userIdEncryption;
+
+    await dataBaseObj.editArticle(userEncryptedId, articleObj);
 
     res.json({
         test: 'ok',

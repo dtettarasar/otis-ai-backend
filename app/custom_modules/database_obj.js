@@ -8,7 +8,7 @@ const {JSDOM} = require('jsdom');
 const dompurify = createDomPurify(new JSDOM().window);
 const strEncrypter = require('./str_encrypter');
 const strSlugGenerator = require('./str_slug_generator');
-const userTokenObj = require('./user_token_obj');
+//const userTokenObj = require('./user_token_obj');
 
 //Models
 const roleModel = require('../models/role.model');
@@ -345,7 +345,7 @@ const dataBaseObj = {
 
     },
 
-    async editArticle(accessToken, articleObj) {
+    async editArticle(userEncryptedId, articleObj) {
 
         const result = {
             updateStatus: null,
@@ -357,16 +357,16 @@ const dataBaseObj = {
         console.log("---------------------------------------------------------");
         console.log('init the editArticle method from the database Obj');
 
-        console.log("accessToken: ");
-        console.log(accessToken);
+        // console.log("accessToken: ");
+        // console.log(accessToken);
         
         // articleObj contains the article data that comes from the Vue Js App
         console.log("articleObj");
         console.log(articleObj);
 
         // Verify that the user own the article he wants to edit
-        const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
-        const userEncryptedId = tokenData.result.userIdEncryption;
+        // const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        // const userEncryptedId = tokenData.result.userIdEncryption;
 
         console.log("userEncryptedId");
         console.log(userEncryptedId);
