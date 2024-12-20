@@ -222,11 +222,13 @@ router.post('/user-update-article', async(req, res) => {
     const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
     const userEncryptedId = tokenData.result.userIdEncryption;
 
-    await dataBaseObj.editArticle(userEncryptedId, articleObj);
+    const articleUpdate = await dataBaseObj.editArticle(userEncryptedId, articleObj);
 
     res.json({
         test: 'ok',
-        message: "post request to /user-update-article route"
+        message: "post request to /user-update-article route",
+        accessToken: accessToken,
+        articleUpdateResponse: articleUpdate,
     });
 
 });

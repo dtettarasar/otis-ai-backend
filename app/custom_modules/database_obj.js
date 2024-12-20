@@ -351,7 +351,8 @@ const dataBaseObj = {
             updateStatus: null,
             articleEncryptedId: articleObj.id,
             error:null,
-            updatedContent: null
+            updatedContent: null,
+            articleSlug: null
         }
 
         console.log("---------------------------------------------------------");
@@ -407,6 +408,10 @@ const dataBaseObj = {
             result.updateStatus = true;
             result.updatedContent = articleData.sanitizedHtml;
 
+            // keep the article slug to make sure the vue app can search the updated article in the store and the localStorage
+            result.articleSlug = articleData.slug;
+            result.lastModifiedAt = articleData.lastModifiedAt;
+
         } else {
 
             result.updateStatus = false;
@@ -414,10 +419,12 @@ const dataBaseObj = {
 
         }
 
-        console.log(result);
+        // console.log(result);
 
         console.log("end of editArticle method");
         console.log("---------------------------------------------------------");
+
+        return result; 
 
     },
 
