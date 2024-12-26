@@ -51,6 +51,12 @@ ArticleSch.pre("validate", function (next) {
 
     }
 
+    if (this.isModified('content')) {
+
+        this.lastModifiedAt = new Date();
+        
+    }
+
     next();
 
 });

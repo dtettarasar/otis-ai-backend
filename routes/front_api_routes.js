@@ -213,6 +213,26 @@ router.post('/user-create-article', async (req, res) => {
 
 });
 
+router.post('/user-update-article', async(req, res) => {
+
+    console.log('post request to update article');
+    const accessToken = req.body.accessToken;
+    const articleObj = req.body.articleObj;
+
+    const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    const userEncryptedId = tokenData.result.userIdEncryption;
+
+    const articleUpdate = await dataBaseObj.editArticle(userEncryptedId, articleObj);
+
+    res.json({
+        test: 'ok',
+        message: "post request to /user-update-article route",
+        accessToken: accessToken,
+        articleUpdateResponse: articleUpdate,
+    });
+
+});
+
 router.get('/user-credit-balance', async(req, res) => {
 
     console.log('get request to retrieve user credit balance');

@@ -8,6 +8,7 @@ const {JSDOM} = require('jsdom');
 const dompurify = createDomPurify(new JSDOM().window);
 const strEncrypter = require('./str_encrypter');
 const strSlugGenerator = require('./str_slug_generator');
+//const userTokenObj = require('./user_token_obj');
 
 //Models
 const roleModel = require('../models/role.model');
@@ -341,6 +342,89 @@ const dataBaseObj = {
             return false;
 
         }
+
+    },
+
+    async editArticle(userEncryptedId, articleObj) {
+
+        const result = {
+            updateStatus: null,
+            articleEncryptedId: articleObj.id,
+            error:null,
+            updatedContent: null,
+            articleSlug: null
+        }
+
+        console.log("---------------------------------------------------------");
+        console.log('init the editArticle method from the database Obj');
+
+        // console.log("accessToken: ");
+        // console.log(accessToken);
+        
+        // articleObj contains the article data that comes from the Vue Js App
+        console.log("articleObj");
+        console.log(articleObj);
+
+        // Verify that the user own the article he wants to edit
+        // const tokenData = userTokenObj.authToken(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        // const userEncryptedId = tokenData.result.userIdEncryption;
+
+        console.log("userEncryptedId");
+        console.log(userEncryptedId);
+
+        const decryptUserId = await strEncrypter.method.decryptString(userEncryptedId);
+        console.log("decryptUserId:", decryptUserId);
+        console.log("decryptUserId type:", typeof decryptUserId);
+
+        // Get the article encrypted id and convert it to an object that can be used for decryption
+        const articleIdObj = {
+            iv: articleObj.id.split('_')[0],
+            encryptedStr: articleObj.id.split('_')[1]
+        }
+
+        console.log("articleIdObj");
+        console.log(articleIdObj);
+
+        const decryptArticleId = await strEncrypter.method.decryptString(articleIdObj);
+        console.log('decryptArticleId:', decryptArticleId);
+
+        // articleData contains the article data from the MongoDB document
+        const articleData = await this.findArticleById(decryptArticleId);
+        console.log("articleData from the database: ");
+        console.log(articleData);
+
+        const articleUserIdStr = articleData.otisUserId.toHexString();
+        const decryptUserIdStr = decryptUserId.toString();
+
+        if (articleUserIdStr === decryptUserIdStr) {
+
+            console.log("userID in article valid");
+            articleData.set({content: articleObj.sanitizedHtml});
+            await articleData.save();
+
+            console.log("article data, after saving: ");
+            console.log(articleData);
+
+            result.updateStatus = true;
+            result.updatedContent = articleData.sanitizedHtml;
+
+            // keep the article slug to make sure the vue app can search the updated article in the store and the localStorage
+            result.articleSlug = articleData.slug;
+            result.lastModifiedAt = articleData.lastModifiedAt;
+
+        } else {
+
+            result.updateStatus = false;
+            result.error = "userID from article not equal to user ID from token";
+
+        }
+
+        // console.log(result);
+
+        console.log("end of editArticle method");
+        console.log("---------------------------------------------------------");
+
+        return result; 
 
     },
 
