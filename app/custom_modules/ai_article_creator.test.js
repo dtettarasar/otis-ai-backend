@@ -1,6 +1,8 @@
 import { expect, test } from 'vitest';
 const aiArticleCreator = require('./ai_article_creator');
 
+import * as cheerio from 'cheerio';
+
 let testKeywords = [
     'motorsport',
     'video game',
@@ -55,8 +57,34 @@ test('generate an article', async() => {
 
     }
 
+    // Vérifications basique de la réponse d'open ai
     await expect(aiArticleResponse[0]).toBeTypeOf('object');
     await expect(aiArticleResponse[0].message.content).toBeDefined();
     await expect(aiArticleResponse[0].message.content).toBeTypeOf('string');
+
+    // Vérification du contenu HTML
+    const articleContent = aiArticleResponse[0].message.content;
+    const $ = cheerio.load(articleContent);
+
+    // Vérifier qu'il contient un titre principal (h1)
+    const h1Text = $('h1').text();
+    expect(h1Text).toBeDefined();
+    expect(h1Text.length).toBeGreaterThan(10); // Vérifie que le titre principal n'est pas vide ou trop court
+
+    // Vérifier qu'il y a des sections avec des titres secondaires (h2)
+    const h2Elements = $('h2');
+    expect(h2Elements.length).toBeGreaterThanOrEqual(1); // Au moins une section
+    h2Elements.each((index, element) => {
+        const sectionTitle = $(element).text();
+        expect(sectionTitle.length).toBeGreaterThan(5); // Vérifie que chaque titre secondaire est non vide
+    });
+
+    // Vérifier qu'il y a des paragraphes sous les titres secondaires
+    const paragraphs = $('p');
+    expect(paragraphs.length).toBeGreaterThanOrEqual(1); // Au moins un paragraphe
+    paragraphs.each((index, element) => {
+        const paragraphText = $(element).text();
+        expect(paragraphText.length).toBeGreaterThan(10); // Chaque paragraphe contient du texte non trivial
+    });
 
 }, 15000);
