@@ -28,11 +28,11 @@ test('generate a correct prompt', async () => {
 
     const prompt = aiArticleCreator.generatePrompt(testKeywords, testDescription, testLanguage);
 
-    console.log("prompt generated:")
-    console.log(prompt);
+    // console.log("prompt generated:")
+    // console.log(prompt);
 
-    console.log("test request:");
-    console.log(testRequest);
+    // console.log("test request:");
+    // console.log(testRequest);
 
     await expect(prompt).toBeTypeOf('string'); 
     await expect(prompt).toEqual(testRequest);
@@ -54,5 +54,9 @@ test('generate an article', async() => {
         console.log(err)
 
     }
+
+    await expect(aiArticleResponse[0]).toBeTypeOf('object');
+    await expect(aiArticleResponse[0].message.content).toBeDefined();
+    await expect(aiArticleResponse[0].message.content).toBeTypeOf('string');
 
 }, 15000);
