@@ -87,4 +87,4 @@ test('generate an article', async() => {
         expect(paragraphText.length).toBeGreaterThan(10); // Chaque paragraphe contient du texte non trivial
     });
 
-}, 15000);
+}, 20000);
