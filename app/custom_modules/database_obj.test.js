@@ -190,13 +190,13 @@ test('test the updateCreditBalance method', async () => {
     const userZero = testUserObj.userCont[0].creationResult.userData;
     // console.log(userZero);
 
-    await expect(userZero.credit).toEqual(0);
+    await expect(userZero.credit).toEqual(5);
 
     const testUpdateCredit = await dataBaseObj.updateCreditBalance(userZero._id, 5);
     // console.log(testUpdateCredit);
 
     await expect(testUpdateCredit._id).toEqual(userZero._id);
-    await expect(testUpdateCredit.credit).toEqual(5);
+    await expect(testUpdateCredit.credit).toEqual(10);
 
     const falseUserId = "thisis1fakeuserid";
     const testFailedUpdate = await dataBaseObj.updateCreditBalance(falseUserId, 5);
@@ -217,7 +217,7 @@ test('test the getUserCreditBalance method', async () => {
 
     const testFailedUserCredit = await dataBaseObj.getUserCreditBalance(fakeEncryptedUserId);
 
-    await expect(testUserCredit).toEqual(5);
+    await expect(testUserCredit).toEqual(10);
     await expect(testFailedUserCredit).toBe(false);
     
 });

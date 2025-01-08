@@ -34,12 +34,14 @@ const aiArticleCreator = {
 
     },
 
+    /*
     initApiConfig() {
 
         const openai = new OpenAI(configData);
         return openai;
 
     },
+    */
 
     async generateArticle(prompt) {
         
@@ -51,7 +53,7 @@ const aiArticleCreator = {
 
                 const chatCompletion = await openai.chat.completions.create({
                     messages: [{ role: 'user', content: prompt }],
-                    model: 'gpt-3.5-turbo',
+                    model: 'gpt-4o',
                   });
     
                 return chatCompletion.choices;
